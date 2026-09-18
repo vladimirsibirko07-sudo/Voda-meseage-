@@ -4,358 +4,690 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>VODA MESSAGE — Скачать</title>
+    <title>Voda Launcher</title>
 
     <style>
         * {
             box-sizing: border-box;
         }
 
-        html, body {
-            margin: 0;
-            width: 100%;
-            min-height: 100%;
+        :root {
+            --bg: #061014;
+            --bg2: #0a1c21;
+            --card: rgba(12, 31, 37, 0.78);
+            --card2: rgba(255,255,255,0.05);
+            --text: #ffffff;
+            --muted: #91a6ad;
+            --accent: #25e6b1;
+            --accent2: #18b8d8;
+            --border: rgba(255,255,255,0.09);
+            --shadow: rgba(0,0,0,0.45);
+        }
+
+        body.light {
+            --bg: #eefcff;
+            --bg2: #d9f7fa;
+            --card: rgba(255,255,255,0.8);
+            --card2: rgba(0,0,0,0.04);
+            --text: #102027;
+            --muted: #60747b;
+            --accent: #079b78;
+            --accent2: #058bb0;
+            --border: rgba(0,0,0,0.08);
+            --shadow: rgba(0,80,100,0.12);
         }
 
         body {
-            font-family: Arial, sans-serif;
-            color: white;
-            background:
-                radial-gradient(circle at 20% 20%, #38d9ff 0%, transparent 28%),
-                radial-gradient(circle at 80% 80%, #0066ff 0%, transparent 30%),
-                linear-gradient(135deg, #021b35, #064b78, #00a6c7);
-
+            margin: 0;
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
+            font-family: Arial, sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at 20% 10%, rgba(37,230,177,0.12), transparent 30%),
+                radial-gradient(circle at 80% 30%, rgba(24,184,216,0.12), transparent 30%),
+                linear-gradient(135deg, var(--bg), var(--bg2));
+            overflow-x: hidden;
+            transition: 0.4s;
         }
 
-        /* Светящиеся пятна */
+        /* ПУЗЫРЬКИ */
 
-        body::before,
-        body::after {
-            content: "";
+        .water {
             position: fixed;
-            width: 400px;
-            height: 400px;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.35;
-            pointer-events: none;
-        }
-
-        body::before {
-            background: #00eaff;
-            top: -150px;
-            left: -150px;
-        }
-
-        body::after {
-            background: #006eff;
-            bottom: -150px;
-            right: -150px;
-        }
-
-        /* Волны */
-
-        .waves {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 180px;
+            inset: 0;
             overflow: hidden;
             pointer-events: none;
+            z-index: -1;
         }
-
-        .wave {
-            position: absolute;
-            left: -10%;
-            width: 120%;
-            height: 100px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.08);
-            animation: wave 7s ease-in-out infinite alternate;
-        }
-
-        .wave:nth-child(1) {
-            bottom: 70px;
-        }
-
-        .wave:nth-child(2) {
-            bottom: 25px;
-            animation-duration: 9s;
-            opacity: 0.7;
-        }
-
-        .wave:nth-child(3) {
-            bottom: -20px;
-            animation-duration: 11s;
-            opacity: 0.5;
-        }
-
-        @keyframes wave {
-            from {
-                transform: translateX(-4%) rotate(-2deg);
-            }
-
-            to {
-                transform: translateX(4%) rotate(2deg);
-            }
-        }
-
-        /* Пузырьки */
 
         .bubble {
-            position: fixed;
+            position: absolute;
             bottom: -100px;
-            width: 15px;
-            height: 15px;
-            border: 2px solid rgba(255,255,255,0.35);
             border-radius: 50%;
-            animation: bubble 8s linear infinite;
-            pointer-events: none;
+            background: rgba(37,230,177,0.08);
+            border: 1px solid rgba(37,230,177,0.15);
+            animation: rise linear infinite;
         }
 
         .bubble:nth-child(1) {
-            left: 10%;
-            animation-delay: 1s;
-            width: 12px;
-            height: 12px;
+            width: 70px;
+            height: 70px;
+            left: 8%;
+            animation-duration: 15s;
         }
 
         .bubble:nth-child(2) {
-            left: 30%;
-            animation-delay: 4s;
-            width: 20px;
-            height: 20px;
+            width: 35px;
+            height: 35px;
+            left: 28%;
+            animation-duration: 11s;
+            animation-delay: 2s;
         }
 
         .bubble:nth-child(3) {
-            left: 55%;
-            animation-delay: 2s;
-            width: 10px;
-            height: 10px;
+            width: 100px;
+            height: 100px;
+            left: 58%;
+            animation-duration: 19s;
+            animation-delay: 4s;
         }
 
         .bubble:nth-child(4) {
-            left: 75%;
-            animation-delay: 5s;
-            width: 25px;
-            height: 25px;
+            width: 45px;
+            height: 45px;
+            left: 82%;
+            animation-duration: 13s;
         }
 
         .bubble:nth-child(5) {
-            left: 90%;
+            width: 25px;
+            height: 25px;
+            left: 70%;
+            animation-duration: 9s;
             animation-delay: 3s;
-            width: 14px;
-            height: 14px;
         }
 
-        @keyframes bubble {
+        @keyframes rise {
             0% {
-                transform: translateY(0) scale(1);
+                transform: translateY(0);
                 opacity: 0;
             }
 
-            10% {
+            15% {
                 opacity: 1;
             }
 
             100% {
-                transform: translateY(-110vh) scale(1.4);
+                transform: translateY(-120vh);
                 opacity: 0;
             }
         }
 
-        /* Основная карточка */
+        /* HEADER */
 
-        .container {
-            position: relative;
-            z-index: 10;
-
-            width: min(90%, 650px);
-            padding: 55px 35px;
-
-            text-align: center;
-
-            background: rgba(255, 255, 255, 0.12);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-
-            border-radius: 30px;
-
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-
-            box-shadow:
-                0 25px 70px rgba(0, 0, 0, 0.3),
-                inset 0 1px 1px rgba(255,255,255,0.3);
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 30px;
+            background: rgba(4,15,19,0.7);
+            backdrop-filter: blur(18px);
+            border-bottom: 1px solid var(--border);
         }
 
-        /* Логотип */
+        body.light header {
+            background: rgba(255,255,255,0.72);
+        }
 
         .logo {
-            width: 90px;
-            height: 90px;
-            margin: 0 auto 25px;
+            font-size: 21px;
+            font-weight: bold;
+            cursor: pointer;
+        }
 
+        .logo span {
+            color: var(--accent);
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        nav button,
+        .theme-btn {
+            border: 1px solid var(--border);
+            background: var(--card2);
+            color: var(--text);
+            padding: 10px 14px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.25s;
+        }
+
+        nav button:hover,
+        .theme-btn:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .account-btn {
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: #00110c;
+            border: none;
+            font-weight: bold;
+        }
+
+        /* PAGE */
+
+        .page {
+            display: none;
+            width: 100%;
+            animation: pageIn 0.35s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes pageIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .container {
+            width: min(1050px, calc(100% - 30px));
+            margin: auto;
+        }
+
+        /* HERO */
+
+        .hero {
+            min-height: 500px;
             display: flex;
             align-items: center;
             justify-content: center;
+            text-align: center;
+            padding: 70px 20px 50px;
+        }
 
-            border-radius: 28px;
+        .hero-content {
+            max-width: 800px;
+        }
 
-            background: linear-gradient(
-                145deg,
-                rgba(255,255,255,0.4),
-                rgba(255,255,255,0.08)
-            );
-
-            border: 1px solid rgba(255,255,255,0.35);
-
-            box-shadow:
-                0 15px 35px rgba(0,0,0,0.2),
-                inset 0 2px 8px rgba(255,255,255,0.3);
-
+        .water-icon {
+            width: 95px;
+            height: 95px;
+            margin: auto auto 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 45px;
-        }
-
-        h1 {
-            margin: 0;
-
-            font-size: clamp(38px, 8vw, 62px);
-            font-weight: 800;
-            letter-spacing: 3px;
-
             background: linear-gradient(
-                90deg,
-                #ffffff,
-                #a9f7ff,
-                #ffffff
+                135deg,
+                rgba(37,230,177,0.16),
+                rgba(24,184,216,0.16)
             );
-
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-
-            text-shadow: 0 5px 25px rgba(0, 220, 255, 0.25);
+            border: 1px solid rgba(37,230,177,0.25);
+            box-shadow: 0 0 50px rgba(37,230,177,0.12);
+            animation: float 3s ease-in-out infinite;
         }
 
-        p {
-            margin: 15px 0 35px;
+        @keyframes float {
+            0%,100% {
+                transform: translateY(0);
+            }
 
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .hero h1 {
+            margin: 0;
+            font-size: clamp(42px,8vw,82px);
+            letter-spacing: -3px;
+        }
+
+        .hero h1 span {
+            color: var(--accent);
+        }
+
+        .hero p {
+            color: var(--muted);
             font-size: 18px;
             line-height: 1.6;
-
-            color: rgba(255,255,255,0.8);
+            margin: 20px auto 30px;
+            max-width: 650px;
         }
 
-        /* Кнопка */
-
-        .download {
-            position: relative;
-
+        .download-btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
-
-            min-width: 270px;
-
-            padding: 17px 30px;
-
-            color: #003047;
-            background: linear-gradient(
-                135deg,
-                #ffffff,
-                #a9f7ff
-            );
-
-            text-decoration: none;
-
+            width: 250px;
+            padding: 16px 25px;
             border-radius: 15px;
-
-            font-size: 18px;
+            border: none;
+            background: linear-gradient(135deg,var(--accent),var(--accent2));
+            color: #00120e;
+            font-size: 16px;
             font-weight: bold;
-
-            box-shadow:
-                0 10px 30px rgba(0, 0, 0, 0.25),
-                0 0 25px rgba(90, 240, 255, 0.35);
-
-            transition:
-                transform 0.25s ease,
-                box-shadow 0.25s ease;
+            text-decoration: none;
+            cursor: pointer;
+            box-shadow: 0 12px 35px rgba(37,230,177,0.16);
+            transition: 0.25s;
         }
 
-        .download:hover {
-            transform: translateY(-4px) scale(1.02);
-
-            box-shadow:
-                0 15px 40px rgba(0, 0, 0, 0.3),
-                0 0 40px rgba(100, 245, 255, 0.65);
-        }
-
-        .download:active {
-            transform: translateY(0) scale(0.98);
-        }
-
-        .download-icon {
-            font-size: 24px;
-        }
-
-        /* Информация о файле */
-
-        .file {
-            margin-top: 20px;
-
-            font-size: 14px;
-
-            color: rgba(255,255,255,0.6);
+        .download-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 18px 45px rgba(37,230,177,0.25);
         }
 
         .version {
-            display: inline-block;
-
-            margin-top: 12px;
-            padding: 6px 12px;
-
-            border-radius: 20px;
-
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.15);
-
-            font-size: 12px;
-            color: rgba(255,255,255,0.7);
+            margin-top: 15px;
+            color: var(--muted);
+            font-size: 13px;
         }
 
-        /* Мобильная версия */
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 18px;
+            padding: 8px 13px;
+            border-radius: 30px;
+            background: rgba(37,230,177,0.08);
+            color: var(--accent);
+            font-size: 13px;
+            border: 1px solid rgba(37,230,177,0.14);
+        }
 
-        @media (max-width: 600px) {
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent);
+        }
 
-            .container {
-                padding: 40px 20px;
-                border-radius: 25px;
+        /* SECTIONS */
+
+        section {
+            padding: 35px 0;
+        }
+
+        .section-title {
+            margin-bottom: 22px;
+        }
+
+        .section-title h2 {
+            margin: 0 0 7px;
+            font-size: 28px;
+        }
+
+        .section-title p {
+            margin: 0;
+            color: var(--muted);
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(3,1fr);
+            gap: 15px;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 15px 45px var(--shadow);
+            backdrop-filter: blur(15px);
+            transition: 0.25s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(37,230,177,0.25);
+        }
+
+        .card-icon {
+            font-size: 27px;
+            margin-bottom: 15px;
+        }
+
+        .card h3 {
+            margin: 0 0 10px;
+        }
+
+        .card p {
+            color: var(--muted);
+            line-height: 1.55;
+            margin: 0;
+        }
+
+        /* UPDATE */
+
+        .update-card {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 8px;
+            background: rgba(37,230,177,0.1);
+            color: var(--accent);
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+
+        .update-info h3 {
+            margin: 0 0 7px;
+        }
+
+        .update-info p {
+            color: var(--muted);
+            margin: 0;
+        }
+
+        /* VERSIONS */
+
+        .versions {
+            display: grid;
+            gap: 10px;
+        }
+
+        .version-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            padding: 18px;
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            background: var(--card);
+        }
+
+        .version-name {
+            font-weight: bold;
+        }
+
+        .version-date {
+            color: var(--muted);
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        .small-btn {
+            padding: 9px 13px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--card2);
+            color: var(--text);
+            cursor: pointer;
+        }
+
+        .soon {
+            color: var(--muted);
+            border-color: var(--border);
+            cursor: default;
+        }
+
+        /* AUTH */
+
+        .auth-wrap {
+            min-height: calc(100vh - 70px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 15px;
+        }
+
+        .auth-box {
+            width: min(440px,100%);
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 20px 60px var(--shadow);
+            backdrop-filter: blur(20px);
+        }
+
+        .auth-box h2 {
+            margin-top: 0;
+            font-size: 28px;
+        }
+
+        .auth-box > p {
+            color: var(--muted);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 7px;
+            margin: 20px 0;
+        }
+
+        .tabs button {
+            flex: 1;
+            padding: 11px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text);
+            cursor: pointer;
+        }
+
+        .tabs button.active {
+            background: var(--accent);
+            color: #00120e;
+            border-color: var(--accent);
+            font-weight: bold;
+        }
+
+        form {
+            display: grid;
+            gap: 12px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: var(--card2);
+            color: var(--text);
+            outline: none;
+            font-size: 15px;
+        }
+
+        input:focus {
+            border-color: var(--accent);
+        }
+
+        form button {
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg,var(--accent),var(--accent2));
+            color: #00120e;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .message {
+            min-height: 20px;
+            font-size: 13px;
+            color: var(--accent);
+            text-align: center;
+        }
+
+        /* PROFILE */
+
+        .profile-wrap {
+            min-height: calc(100vh - 70px);
+            padding: 60px 15px;
+        }
+
+        .profile {
+            max-width: 700px;
+            margin: auto;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 20px 60px var(--shadow);
+        }
+
+        .profile-top {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .avatar {
+            width: 75px;
+            height: 75px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg,var(--accent),var(--accent2));
+            color: #00120e;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .profile-top h2 {
+            margin: 0 0 5px;
+        }
+
+        .profile-top p {
+            margin: 0;
+            color: var(--muted);
+        }
+
+        .profile-stat {
+            display: grid;
+            grid-template-columns: repeat(2,1fr);
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .stat {
+            padding: 18px;
+            border-radius: 15px;
+            background: var(--card2);
+            border: 1px solid var(--border);
+        }
+
+        .stat span {
+            display: block;
+            color: var(--muted);
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+
+        .logout {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,80,80,0.25);
+            background: rgba(255,80,80,0.08);
+            color: #ff7777;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* FOOTER */
+
+        footer {
+            margin-top: 60px;
+            padding: 30px 15px;
+            text-align: center;
+            color: var(--muted);
+            border-top: 1px solid var(--border);
+        }
+
+        /* MOBILE */
+
+        @media (max-width:750px) {
+
+            header {
+                padding: 10px 12px;
+            }
+
+            nav button,
+            .theme-btn {
+                padding: 9px 10px;
             }
 
             .logo {
-                width: 75px;
-                height: 75px;
-                font-size: 36px;
+                font-size: 17px;
             }
 
-            h1 {
-                font-size: 38px;
-                letter-spacing: 1px;
+            .cards {
+                grid-template-columns: 1fr;
             }
 
-            p {
-                font-size: 16px;
+            .hero {
+                min-height: 460px;
             }
 
-            .download {
+            .update-card,
+            .version-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .profile-stat {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width:500px) {
+
+            header {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .logo {
                 width: 100%;
-                min-width: 0;
+                text-align: center;
+            }
+
+            nav {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .hero h1 {
+                letter-spacing: -2px;
+            }
+
+            .hero p {
+                font-size: 16px;
             }
         }
     </style>
@@ -363,56 +695,1000 @@
 
 <body>
 
-    <!-- Пузырьки -->
+<div class="water">
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+</div>
 
-    <div class="bubble"></div>
-    <div class="bubble"></div>
-    <div class="bubble"></div>
-    <div class="bubble"></div>
-    <div class="bubble"></div>
 
-    <!-- Волны -->
+<!-- HEADER -->
 
-    <div class="waves">
-        <div class="wave"></div>
-        <div class="wave"></div>
-        <div class="wave"></div>
+<header>
+
+    <div class="logo" onclick="goHome()">
+        💧 Voda <span>Launcher</span>
     </div>
 
-    <!-- Основной блок -->
+    <nav>
 
-    <div class="container">
+        <button onclick="goHome()">
+            Главная
+        </button>
 
-        <div class="logo">
-            💧
-        </div>
+        <button onclick="showPage('versions')">
+            Версии
+        </button>
 
-        <h1>VODA MESSAGE</h1>
-
-        <p>
-            Современный мессенджер для общения.<br>
-            Скачай последнюю версию VODA MESSAGE.
-        </p>
-
-        <a
-            class="download"
-            href="https://github.com/vladimirsibirko07-sudo/Voda-meseage-/releases/download/vods/VODA.MESSAGE.start.7z"
-            download
+        <button
+            onclick="accountClick()"
+            class="account-btn"
+            id="accountButton"
         >
-            <span class="download-icon">⬇</span>
-            Скачать VODA MESSAGE
-        </a>
+            Войти
+        </button>
 
-        <div class="file">
-            Нажмите скачать чтобы начать общаться !и имейте виду запустите локальный сервер пайтон!
-        </div>
+        <button
+            class="theme-btn"
+            onclick="changeTheme()"
+            id="themeButton"
+        >
+            🌙
+        </button>
 
-        <div class="version">
-            Последняя версия
+    </nav>
+
+</header>
+
+
+<!-- HOME -->
+
+<main id="home" class="page active">
+
+    <div class="hero">
+
+        <div class="hero-content">
+
+            <div class="water-icon">
+                💧
+            </div>
+
+            <h1>
+                VODA <span>MESSAGE</span>
+            </h1>
+
+            <p>
+                Современный мессенджер для общения.
+                Скачивай VODA MESSAGE через Voda Launcher.
+            </p>
+
+            <a
+                class="download-btn"
+                href="https://github.com/vladimirsibirko07-sudo/Voda-meseage-/releases/download/vods/VODA.MESSAGE.start.7z"
+                download
+                onclick="return checkDownload()"
+            >
+                ⬇ Скачать VODA MESSAGE
+            </a>
+
+            <div class="version">
+                Версия 1.0.0 • Windows
+            </div>
+
+            <div class="status">
+                <span class="status-dot"></span>
+                Последняя версия доступна
+            </div>
+
         </div>
 
     </div>
+
+
+    <!-- FEATURES -->
+
+    <section>
+
+        <div class="container">
+
+            <div class="section-title">
+
+                <h2>
+                    Почему VODA?
+                </h2>
+
+                <p>
+                    Основные особенности проекта
+                </p>
+
+            </div>
+
+
+            <div class="cards">
+
+                <div class="card">
+
+                    <div class="card-icon">
+                        💬
+                    </div>
+
+                    <h3>
+                        Общение
+                    </h3>
+
+                    <p>
+                        Общайся с друзьями и используй
+                        VODA MESSAGE для повседневного общения.
+                    </p>
+
+                </div>
+
+
+                <div class="card">
+
+                    <div class="card-icon">
+                        ⚡
+                    </div>
+
+                    <h3>
+                        Быстрота
+                    </h3>
+
+                    <p>
+                        Быстрый запуск и удобный
+                        минималистичный интерфейс.
+                    </p>
+
+                </div>
+
+
+                <div class="card">
+
+                    <div class="card-icon">
+                        🌊
+                    </div>
+
+                    <h3>
+                        Стиль VODA
+                    </h3>
+
+                    <p>
+                        Уникальный дизайн,
+                        вдохновлённый водой и технологиями.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- UPDATE -->
+
+    <section>
+
+        <div class="container">
+
+            <div class="section-title">
+
+                <h2>
+                    🆕 Последнее обновление
+                </h2>
+
+                <p>
+                    Текущая версия VODA MESSAGE
+                </p>
+
+            </div>
+
+
+            <div class="card update-card">
+
+                <div class="update-info">
+
+                    <div class="badge">
+                        VERSION 1.0.0
+                    </div>
+
+                    <h3>
+                        Первый релиз VODA MESSAGE
+                    </h3>
+
+                    <p>
+                        Первая доступная версия
+                        VODA MESSAGE.
+                    </p>
+
+                </div>
+
+                <button
+                    class="small-btn"
+                    onclick="showPage('versions')"
+                >
+                    Версии
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- VERSIONS -->
+
+<main id="versions" class="page">
+
+    <div class="profile-wrap">
+
+        <div class="container">
+
+            <div class="section-title">
+
+                <h2>
+                    📦 Версии VODA MESSAGE
+                </h2>
+
+                <p>
+                    История выпусков
+                </p>
+
+            </div>
+
+
+            <div class="versions">
+
+
+                <!-- 1.0.0 -->
+
+                <div class="version-row">
+
+                    <div>
+
+                        <div class="version-name">
+                            VODA MESSAGE 1.0.0
+                        </div>
+
+                        <div class="version-date">
+                            Первый релиз • Доступно
+                        </div>
+
+                    </div>
+
+                    <a
+                        class="small-btn"
+                        href="https://github.com/vladimirsibirko07-sudo/Voda-meseage-/releases/download/vods/VODA.MESSAGE.start.7z"
+                        download
+                        onclick="return checkDownload()"
+                    >
+                        Скачать
+                    </a>
+
+                </div>
+
+
+                <!-- 1.1.0 -->
+
+                <div class="version-row">
+
+                    <div>
+
+                        <div class="version-name">
+                            VODA MESSAGE 1.1.0
+                        </div>
+
+                        <div class="version-date">
+                            Следующее обновление
+                        </div>
+
+                    </div>
+
+                    <button class="small-btn soon">
+                        Скоро
+                    </button>
+
+                </div>
+
+
+                <!-- 1.2.0 -->
+
+                <div class="version-row">
+
+                    <div>
+
+                        <div class="version-name">
+                            VODA MESSAGE 1.2.0
+                        </div>
+
+                        <div class="version-date">
+                            Будущее обновление
+                        </div>
+
+                    </div>
+
+                    <button class="small-btn soon">
+                        Скоро
+                    </button>
+
+                </div>
+
+
+                <!-- 2.0.0 -->
+
+                <div class="version-row">
+
+                    <div>
+
+                        <div class="version-name">
+                            VODA MESSAGE 2.0.0
+                        </div>
+
+                        <div class="version-date">
+                            Планируется
+                        </div>
+
+                    </div>
+
+                    <button class="small-btn soon">
+                        Скоро
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+<!-- AUTH -->
+
+<main id="auth" class="page">
+
+    <div class="auth-wrap">
+
+        <div class="auth-box">
+
+            <h2>
+                Аккаунт Voda
+            </h2>
+
+            <p>
+                Зарегистрируйся или войди в аккаунт.
+            </p>
+
+
+            <div class="tabs">
+
+                <button
+                    id="loginTab"
+                    class="active"
+                    onclick="showLogin()"
+                >
+                    Вход
+                </button>
+
+                <button
+                    id="registerTab"
+                    onclick="showRegister()"
+                >
+                    Регистрация
+                </button>
+
+            </div>
+
+
+            <!-- LOGIN -->
+
+            <form
+                id="loginForm"
+                onsubmit="login(event)"
+            >
+
+                <input
+                    id="loginUsername"
+                    type="text"
+                    placeholder="Имя пользователя"
+                    required
+                >
+
+                <input
+                    id="loginPassword"
+                    type="password"
+                    placeholder="Пароль"
+                    required
+                >
+
+                <button type="submit">
+                    Войти
+                </button>
+
+                <div
+                    id="loginMessage"
+                    class="message"
+                ></div>
+
+            </form>
+
+
+            <!-- REGISTER -->
+
+            <form
+                id="registerForm"
+                onsubmit="register(event)"
+                style="display:none;"
+            >
+
+                <input
+                    id="registerUsername"
+                    type="text"
+                    placeholder="Имя пользователя"
+                    required
+                    minlength="3"
+                >
+
+                <input
+                    id="registerPassword"
+                    type="password"
+                    placeholder="Пароль"
+                    required
+                    minlength="4"
+                >
+
+                <input
+                    id="registerPassword2"
+                    type="password"
+                    placeholder="Повторите пароль"
+                    required
+                    minlength="4"
+                >
+
+                <button type="submit">
+                    Создать аккаунт
+                </button>
+
+                <div
+                    id="registerMessage"
+                    class="message"
+                ></div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+<!-- PROFILE -->
+
+<main id="profile" class="page">
+
+    <div class="profile-wrap">
+
+        <div class="profile">
+
+            <div class="profile-top">
+
+                <div
+                    class="avatar"
+                    id="profileAvatar"
+                >
+                    V
+                </div>
+
+                <div>
+
+                    <h2 id="profileUsername">
+                        Пользователь
+                    </h2>
+
+                    <p>
+                        Аккаунт Voda Launcher
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="profile-stat">
+
+                <div class="stat">
+
+                    <span>
+                        Статус
+                    </span>
+
+                    Активный пользователь
+
+                </div>
+
+
+                <div class="stat">
+
+                    <span>
+                        Версия
+                    </span>
+
+                    VODA MESSAGE 1.0.0
+
+                </div>
+
+
+                <div class="stat">
+
+                    <span>
+                        Платформа
+                    </span>
+
+                    Windows
+
+                </div>
+
+
+                <div class="stat">
+
+                    <span>
+                        Доступ
+                    </span>
+
+                    Скачивание разрешено
+
+                </div>
+
+            </div>
+
+
+            <a
+                class="download-btn"
+                style="width:100%; margin-bottom:12px;"
+                href="https://github.com/vladimirsibirko07-sudo/Voda-meseage-/releases/download/vods/VODA.MESSAGE.start.7z"
+                download
+            >
+                ⬇ Скачать VODA MESSAGE 1.0.0
+            </a>
+
+
+            <button
+                class="logout"
+                onclick="logout()"
+            >
+                Выйти из аккаунта
+            </button>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+<footer>
+    💧 Voda Launcher • VODA MESSAGE 1.0.0
+</footer>
+
+
+<script>
+
+    /* THEME */
+
+    function changeTheme() {
+
+        document.body.classList.toggle("light");
+
+        const isLight =
+            document.body.classList.contains("light");
+
+        localStorage.setItem(
+            "vodaTheme",
+            isLight ? "light" : "dark"
+        );
+
+        updateThemeButton();
+    }
+
+
+    function updateThemeButton() {
+
+        const button =
+            document.getElementById("themeButton");
+
+        if (
+            document.body.classList.contains("light")
+        ) {
+            button.textContent = "☀️";
+        } else {
+            button.textContent = "🌙";
+        }
+    }
+
+
+    if (
+        localStorage.getItem("vodaTheme") === "light"
+    ) {
+        document.body.classList.add("light");
+    }
+
+    updateThemeButton();
+
+
+    /* NAVIGATION */
+
+    function showPage(page) {
+
+        document
+            .querySelectorAll(".page")
+            .forEach(element => {
+                element.classList.remove("active");
+            });
+
+        const selected =
+            document.getElementById(page);
+
+        if (selected) {
+            selected.classList.add("active");
+        }
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+    }
+
+
+    function goHome() {
+        showPage("home");
+    }
+
+
+    /* ACCOUNT */
+
+    function accountClick() {
+
+        const currentUser =
+            localStorage.getItem("vodaCurrentUser");
+
+        if (currentUser) {
+            openProfile();
+        } else {
+            showPage("auth");
+            showLogin();
+        }
+    }
+
+
+    /* LOGIN TAB */
+
+    function showLogin() {
+
+        document.getElementById(
+            "loginForm"
+        ).style.display = "grid";
+
+        document.getElementById(
+            "registerForm"
+        ).style.display = "none";
+
+        document.getElementById(
+            "loginTab"
+        ).classList.add("active");
+
+        document.getElementById(
+            "registerTab"
+        ).classList.remove("active");
+
+        document.getElementById(
+            "loginMessage"
+        ).textContent = "";
+
+        document.getElementById(
+            "registerMessage"
+        ).textContent = "";
+    }
+
+
+    /* REGISTER TAB */
+
+    function showRegister() {
+
+        document.getElementById(
+            "loginForm"
+        ).style.display = "none";
+
+        document.getElementById(
+            "registerForm"
+        ).style.display = "grid";
+
+        document.getElementById(
+            "loginTab"
+        ).classList.remove("active");
+
+        document.getElementById(
+            "registerTab"
+        ).classList.add("active");
+
+        document.getElementById(
+            "loginMessage"
+        ).textContent = "";
+
+        document.getElementById(
+            "registerMessage"
+        ).textContent = "";
+    }
+
+
+    /* REGISTER */
+
+    function register(event) {
+
+        event.preventDefault();
+
+        const username =
+            document.getElementById(
+                "registerUsername"
+            ).value.trim();
+
+        const password =
+            document.getElementById(
+                "registerPassword"
+            ).value;
+
+        const password2 =
+            document.getElementById(
+                "registerPassword2"
+            ).value;
+
+        const message =
+            document.getElementById(
+                "registerMessage"
+            );
+
+
+        if (password !== password2) {
+
+            message.textContent =
+                "Пароли не совпадают.";
+
+            return;
+        }
+
+
+        const userKey =
+            "vodaUser_" +
+            username.toLowerCase();
+
+
+        if (localStorage.getItem(userKey)) {
+
+            message.textContent =
+                "Такой пользователь уже существует.";
+
+            return;
+        }
+
+
+        const user = {
+            username: username,
+            password: password
+        };
+
+
+        localStorage.setItem(
+            userKey,
+            JSON.stringify(user)
+        );
+
+
+        localStorage.setItem(
+            "vodaCurrentUser",
+            username
+        );
+
+
+        message.textContent =
+            "Регистрация выполнена!";
+
+
+        updateInterface();
+
+
+        setTimeout(() => {
+            openProfile();
+        }, 500);
+    }
+
+
+    /* LOGIN */
+
+    function login(event) {
+
+        event.preventDefault();
+
+        const username =
+            document.getElementById(
+                "loginUsername"
+            ).value.trim();
+
+        const password =
+            document.getElementById(
+                "loginPassword"
+            ).value;
+
+        const message =
+            document.getElementById(
+                "loginMessage"
+            );
+
+
+        const userKey =
+            "vodaUser_" +
+            username.toLowerCase();
+
+
+        const savedUser =
+            localStorage.getItem(userKey);
+
+
+        if (!savedUser) {
+
+            message.textContent =
+                "Пользователь не найден.";
+
+            return;
+        }
+
+
+        const user =
+            JSON.parse(savedUser);
+
+
+        if (user.password !== password) {
+
+            message.textContent =
+                "Неверный пароль.";
+
+            return;
+        }
+
+
+        localStorage.setItem(
+            "vodaCurrentUser",
+            user.username
+        );
+
+
+        message.textContent =
+            "Вход выполнен!";
+
+
+        updateInterface();
+
+
+        setTimeout(() => {
+            openProfile();
+        }, 400);
+    }
+
+
+    /* PROFILE */
+
+    function openProfile() {
+
+        const username =
+            localStorage.getItem(
+                "vodaCurrentUser"
+            );
+
+
+        if (!username) {
+
+            showPage("auth");
+            return;
+        }
+
+
+        document.getElementById(
+            "profileUsername"
+        ).textContent = username;
+
+
+        document.getElementById(
+            "profileAvatar"
+        ).textContent =
+            username.charAt(0).toUpperCase();
+
+
+        showPage("profile");
+    }
+
+
+    /* LOGOUT */
+
+    function logout() {
+
+        localStorage.removeItem(
+            "vodaCurrentUser"
+        );
+
+        updateInterface();
+
+        goHome();
+    }
+
+
+    /* HEADER */
+
+    function updateInterface() {
+
+        const currentUser =
+            localStorage.getItem(
+                "vodaCurrentUser"
+            );
+
+        const button =
+            document.getElementById(
+                "accountButton"
+            );
+
+
+        if (currentUser) {
+
+            button.textContent =
+                "👤 Кабинет";
+
+        } else {
+
+            button.textContent =
+                "Войти";
+        }
+    }
+
+
+    /* DOWNLOAD */
+
+    function checkDownload() {
+
+        const currentUser =
+            localStorage.getItem(
+                "vodaCurrentUser"
+            );
+
+
+        if (!currentUser) {
+
+            alert(
+                "Скачивание доступно только зарегистрированным пользователям. Сначала зарегистрируйтесь или войдите."
+            );
+
+            showPage("auth");
+            showRegister();
+
+            return false;
+        }
+
+
+        return true;
+    }
+
+
+    /* START */
+
+    updateInterface();
+
+</script>
 
 </body>
 </html>
-```
+
